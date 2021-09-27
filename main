@@ -1,0 +1,75 @@
+package com.company;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Bitcoin CoinGecko = new Bitcoin();
+        Bot CryptoBot = new Bot();
+
+        CoinGecko.registerBot(CryptoBot);
+
+        CoinGecko.setPrice(43800.6);
+        CoinGecko.setPrice(43803.2);
+
+    }
+
+    public interface Subject {
+
+        void registerBot(Observer bot);
+
+        void removeBot(Observer bot);
+
+        void notifyBots();
+
+    }
+
+    public interface Observer {
+
+        void update(double price);
+
+    }
+
+    public static class Bitcoin implements Subject{
+
+        private List<Observer> bots = new ArrayList<>();
+        private double price;
+
+        @Override
+        public void registerBot(Observer bot) {
+            bots.add(bot);
+        }
+
+        @Override
+        public void removeBot(Observer bot) {
+            bots.remove(bot);
+        }
+
+        @Override
+        public void notifyBots() {
+            for (Observer bot:bots) {
+                bot.update(this.price);
+            }
+        }
+
+        public void setPrice(double price){
+            this.price = price;
+            notifyBots();
+        }
+
+    }
+
+    public static class Bot implements Observer{
+
+        private double price;
+
+        @Override
+        public void update(double price) {
+            this.price = price;
+            System.out.println("New bitcoin price(in usd) - " + this.price);
+        }
+
+    }
+}
